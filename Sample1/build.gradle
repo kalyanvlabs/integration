@@ -1,0 +1,56 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.2.RELEASE'
+	}
+	
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.6.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'Sample1'
+    version =  '1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    // tag::jetty[]
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    
+    //compile("org.springframework.boot:spring-boot-starter-integration")
+    compile 'org.springframework.integration:spring-integration-core:4.3.11.RELEASE'
+
+	// https://mvnrepository.com/artifact/org.springframework.integration/spring-integration-http
+	compile group: 'org.springframework.integration', name: 'spring-integration-http', version: '4.3.7.RELEASE'
+
+    compile("org.springframework.boot:spring-boot-starter-jetty")
+    // end::jetty[]
+    // tag::actuator[]
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    // end::actuator[]
+    testCompile("junit:junit")
+}
+//////////////////////////////////
+
+//springBoot {
+	//executable = true
+	//mainClass = "com.myexample.java.Sample1"
+//}
+

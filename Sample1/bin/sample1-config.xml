@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:int-http="http://www.springframework.org/schema/integration/http"
+    xmlns:int="http://www.springframework.org/schema/integration"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+    http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd">
+    
+	<int:channel id="httpRequestChannel"/>
+	<int:channel id="httpResponseChannel"/>
+	<int:channel id="httpErrorChannel"/>
+	
+	<bean id="myService" class="com.myexample.service.MyService" />
+	
+	<int-http:inbound-gateway request-channel="httpRequestChannel" reply-channel="httpResponseChannel" error-channel="httpErrorChannel"
+		supported-methods="POST"
+		path="/test" request-payload-type="com.myexample.java.MyName" convert-exceptions="true">
+		<int-http:request-mapping consumes="application/json" produces="text/plain"/>
+	</int-http:inbound-gateway>
+	
+	<int:service-activator ref="myService" method="myMethod" input-channel="httpRequestChannel" output-channel="httpResponseChannel" />
+	
+
+	<int-http:outbound-gateway request-channel="httpRequestChannel" reply-channel="httpResponseChannel" 
+			url="http://localhost:8090/ietest" http-method="POST" expected-response-type="java.lang.String" />
+
+</beans>
